@@ -10,7 +10,7 @@ public class Main {
         UserMapper mapper = session.getMapper(UserMapper.class);
 
         UserView view = new UserView();
-        new UserController(view, mapper);
+        new UserController(view, mapper, session);
 
         view.setVisible(true);
     }
