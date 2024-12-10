@@ -1,6 +1,9 @@
 package view;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
 import javax.swing.table.DefaultTableModel;
@@ -48,7 +51,22 @@ public class CustomerView extends JFrame {
         add(panel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+
+        customerTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int selectedRow = customerTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    txtNama.setText(customerTable.getValueAt(selectedRow, 1).toString());
+                    txtEmail.setText(customerTable.getValueAt(selectedRow, 2).toString());
+                    txtNoTelp.setText(customerTable.getValueAt(selectedRow, 3).toString());
+                    txtAlamat.setText(customerTable.getValueAt(selectedRow, 4).toString());
+                }
+            }
+        });
+    
     }
+    
 
     public String getNamaInput() {
         return txtNama.getText();
@@ -92,8 +110,19 @@ public class CustomerView extends JFrame {
     public int getSelectedCustomerId() {
         int selectedRow = customerTable.getSelectedRow();
         if (selectedRow != -1) {
-            return (int) customerTable.getValueAt(selectedRow, 0); 
+            Object idObject = customerTable.getValueAt(selectedRow, 0);
+            if (idObject instanceof Integer) {
+                return (Integer) idObject;
+            } else {
+                try {
+                    return Integer.parseInt(idObject.toString());
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Invalid ID format.");
+                    return -1;
+                }
+            }
         }
         return -1;
     }
+    
 }
